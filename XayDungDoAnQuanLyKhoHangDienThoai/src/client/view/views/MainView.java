@@ -43,7 +43,7 @@ public class MainView extends BaseView {
 
         titleLabel.setFont(new Font("Arial", Font.BOLD, 34));
         label.setFont(new Font("Arial", Font.PLAIN, 18));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 10, 0));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         titlePanel.add(titleLabel);
         titlePanel.add(label);

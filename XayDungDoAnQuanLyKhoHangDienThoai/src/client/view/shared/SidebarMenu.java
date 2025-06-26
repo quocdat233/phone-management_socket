@@ -20,6 +20,8 @@ public class SidebarMenu extends JPanel {
             btnImport, btnExport, btnMess, btnSupplier, btnStock;
     private JLabel lblTitle, lblNhomQuyen;
     private JLabel lblAvata;
+    private Runnable onCloseListener;
+
 
 
     private final List<JButton> allButtons = new ArrayList<>();
@@ -69,10 +71,39 @@ public class SidebarMenu extends JPanel {
 
         topUserPanel.add(lblAvata);
         topUserPanel.add(infoPanel);
-        topUserPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
+        topUserPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
 
-        add(topUserPanel);
+        // Panel chứa nút đóng ở trên cùng bên phải
+        JPanel closePanel = new JPanel();
+        closePanel.setLayout(new BoxLayout(closePanel, BoxLayout.X_AXIS));
+        closePanel.setOpaque(false);
+        closePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        closePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10)); // căn lề trên phải
+
+        JButton btnClose = new JButton("✖");
+        btnClose.setFocusPainted(false);
+        btnClose.setBorderPainted(false);
+        btnClose.setContentAreaFilled(false);
+        btnClose.setFont(new Font("Arial", Font.BOLD, 16));
+        btnClose.setForeground(Color.BLACK);
+        btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnClose.setToolTipText("Đóng menu");
+        btnClose.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+        btnClose.addActionListener(e -> {
+            if (onCloseListener != null) onCloseListener.run();
+        });
+
+// Căn phải
+        closePanel.add(Box.createHorizontalGlue());
+        closePanel.add(btnClose);
+
+// Thêm vào đầu Sidebar
+        add(topUserPanel,BorderLayout.CENTER);
+
+
+
 
 
 
@@ -131,19 +162,26 @@ public class SidebarMenu extends JPanel {
 
     private JButton createSidebarButton(String text, String svgPath) {
         JButton button = new JButton(text);
+
         button.setFont(new Font("Arial", Font.PLAIN, 16));
         button.setBorderPainted(false);
         button.setBackground(defaultColor);
         button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setMaximumSize(new Dimension(200, 49));
-        button.setPreferredSize(new Dimension(200, 45));
-        button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setIconTextGap(10);
-        button.setMargin(new Insets(0, 15, 0, 0));
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setIcon(new FlatSVGIcon(svgPath, 31, 31));
 
+        button.setHorizontalAlignment(SwingConstants.LEFT); // Căn trái toàn bộ nội dung
+        button.setIconTextGap(15); // Khoảng cách giữa icon và chữ
+        button.setMargin(new Insets(10, 20, 10, 10)); // Lề trong (top, left, bottom, right)
+
+        button.setMaximumSize(new Dimension(220, 45));
+        button.setPreferredSize(new Dimension(220, 45));
+
+        button.setAlignmentX(Component.LEFT_ALIGNMENT); // Căn trái trong layout Box
+
+        // Icon SVG
+        button.setIcon(new FlatSVGIcon(svgPath, 28, 28));
+
+        // Hover/Active effect
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -160,6 +198,7 @@ public class SidebarMenu extends JPanel {
 
         return button;
     }
+
     public String anButtonTheoQuyen(int manhomquyen) {
         String tenNhomQuyen = "";
         switch (manhomquyen) {
@@ -242,6 +281,11 @@ public class SidebarMenu extends JPanel {
     public JButton getBtnSupplier() {
         return btnSupplier;
     }
+    public void setOnCloseListener(Runnable onCloseListener) {
+        this.onCloseListener = onCloseListener;
+    }
+
+
     public JButton getBtnStock() {
         return btnStock;
     }
