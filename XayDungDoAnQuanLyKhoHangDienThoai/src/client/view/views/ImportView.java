@@ -55,6 +55,15 @@ public class ImportView extends BaseView {
                 return false;
             }
         };
+//        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+//        table.setRowSorter(sorter);
+//        for (int i = 0; i < table.getColumnCount(); i++) {
+//        sorter.setSortable(i, false);
+//}       sorter.setSortable(2, true);
+//        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+//        sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
+//        sorter.setSortKeys(sortKeys);
+//        sorter.sort();
 
         table = new JTable(tableModel);
         table.setRowSorter(new TableRowSorter<>(tableModel));

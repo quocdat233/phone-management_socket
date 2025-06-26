@@ -159,6 +159,9 @@ public class messagerController {
             JOptionPane.showMessageDialog(view, "Bạn chưa chọn người nhận hoặc nhập tin nhắn.");
             return;
         }
+        if(text.equalsIgnoreCase("VKU")){
+            text = "Viet Han";
+        }
 
         ChatMessage msg = new ChatMessage(
                 currentUsername,
@@ -239,7 +242,13 @@ public class messagerController {
                 view.displayFile(currentUsername, file.getName(), data, true,
                         isGroup ? recipient : "", recipient);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(view, "Không thể gửi file: " + e.getMessage());
+                e.printStackTrace(); // ghi log ra console
+                JOptionPane.showMessageDialog(view,
+                        "Không thể gửi file. Vui lòng kiểm tra lại đường dẫn hoặc kết nối mạng.",
+                        "Lỗi gửi file",
+                        JOptionPane.ERROR_MESSAGE
+                );
+
             }
         }
     }

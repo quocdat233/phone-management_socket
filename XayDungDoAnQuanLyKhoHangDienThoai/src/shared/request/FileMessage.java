@@ -23,23 +23,10 @@ public class FileMessage implements Serializable {
     public byte[] getData() { return data; }
     public boolean isGroup() { return isGroup; }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public void setData(byte[] data) {
         this.data = data;
     }
 
-    public void setGroup(boolean group) {
-        isGroup = group;
-    }
 }

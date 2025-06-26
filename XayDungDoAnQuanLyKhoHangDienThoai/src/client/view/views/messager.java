@@ -4,6 +4,7 @@ import client.controller.messagerController;
 import client.view.components.RoundedButton;
 import client.view.components.RoundedPanel;
 import client.view.shared.BaseView;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import shared.models.NhanVien;
 import shared.models.TaiKhoan;
 
@@ -29,13 +30,13 @@ public class messager extends BaseView {
     private JButton uploadButton;
     private JButton createGroupButton;
     private JLabel chatTitleLabel;
-    private JPanel chatPanel; // This panel needs to be the container for messages of the currently active chat
+    private JPanel chatPanel;
     private JLabel userNameLabel;
     private String currentUsername;
     private String currentRecipient = "";
     private JPanel mainChatPanel;
     private boolean isCurrentChatGroup = false;
-    private JPanel messagePanel; // This is the actual panel holding individual message bubbles
+    private JPanel messagePanel;
 
     // Màu sắc
     private static final Color MAIN_BG = new Color(240, 242, 245);
@@ -195,14 +196,8 @@ public class messager extends BaseView {
         rightPanel.add(groupMembersPanel, BorderLayout.CENTER);
         mainChatPanel.add(rightPanel, BorderLayout.EAST);
 
-        // Initialize currentChatPane. This will be the JTextPane that
-        // *holds* the formatted messages (text, colors, etc.),
-        // but it's not the container that gets removed/added.
-        // The messagePanel holds the actual visual message bubbles.
         currentChatPane = new JTextPane();
         currentChatPane.setEditable(false);
-        // Ensure messagePanel is associated with currentChatPane or the displayed pane
-        // userChatPanes.put("yourself_chat", currentChatPane); // This line needs to be handled carefully with the new messagePanel
     }
 
     private class UserListCellRenderer extends DefaultListCellRenderer {
@@ -224,9 +219,6 @@ public class messager extends BaseView {
 
     public void displayMessage(String sender, String message, boolean yourMessage, String conversationId) {
         SwingUtilities.invokeLater(() -> {
-            // Ensure you're adding to the correct messagePanel associated with the current conversation.
-            // For now, let's assume `messagePanel` is the one shown in the current tab.
-            // If you have different messagePanels per tab, you'd need to retrieve the correct one.
 
             // Create chat bubble
             JPanel bubble = new JPanel(new BorderLayout());
@@ -316,7 +308,11 @@ public class messager extends BaseView {
             JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
             filePanel.setOpaque(false);
 
-            JLabel iconLabel = new JLabel(new ImageIcon(getClass().getResource("/images/file_icon.png")));
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/documentation.png"));
+            Image scaledImage = originalIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+            JLabel iconLabel = new JLabel(scaledIcon);
 
             JLabel fileLabel = new JLabel(filename);
             fileLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));

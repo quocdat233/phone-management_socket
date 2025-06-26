@@ -138,6 +138,10 @@ public class ProductController {
         String image_path = form.getImagePath().trim();
 
         try {
+            if(tenSp.length() > 2){
+                JOptionPane.showMessageDialog(form,"tên trên 2 kí tự");
+                return;
+            }
             int dungLuongPin = Integer.parseInt(DungLuongPin);
             int ThoiGianBaoHanh = Integer.parseInt(thoiGianBaoHanh);
             int PhienBanHDH = Integer.parseInt(phienBanHDH);
@@ -218,7 +222,7 @@ public class ProductController {
 
                 sm.setProductListListener(list -> {
                     updateTable(list);
-                    JOptionPane.showMessageDialog(form, "Thêm thành công!");
+                    JOptionPane.showMessageDialog(form, "Thêm thành công!" + request.getSanPham().getTenSanPham());
 
                     form.dispose();
                 });

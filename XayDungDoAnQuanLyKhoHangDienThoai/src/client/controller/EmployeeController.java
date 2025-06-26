@@ -140,7 +140,7 @@ public class EmployeeController {
 
 		String ten = view.getTable().getValueAt(selectedRow, 1).toString();
 		String gioiTinhStr = view.getTable().getValueAt(selectedRow, 2).toString();
-		int gioiTinh = gioiTinhStr.equalsIgnoreCase("Nam") ? 0 : 1;
+		int gioiTinh = gioiTinhStr.equalsIgnoreCase("Nam") ? 1 : 0;
 		Object objNgaySinh = view.getTable().getValueAt(selectedRow, 3);
 		Date ngaySinh = null;
 

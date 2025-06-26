@@ -204,6 +204,10 @@ public class EditEmployeeForm extends JDialog {
             txt_gender = 0;
         }
         txt_gender = gioiTinh;
+        if (txt_gender == 1) {
+            getRBtnMale().setSelected(true);
+        }
+        else if (txt_gender == 0) getRBtnFemale().setSelected(true);
         dateChooser.setDate(ngaySinh);
         txtEmployeePhone.setText(sdt);
         txtEmployeeEmail.setText(email);

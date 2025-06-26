@@ -34,22 +34,4 @@ public class ClientHandler {
         }
     }
 
-
-//    public void handleChatMessage(ChatMessage chatMessage) {
-//        // Nếu là chat riêng
-//        if (chatMessage.getType() == ChatMessage.Type.PRIVATE) {
-//            Server.clientHandlers.stream()
-//                    .filter(c -> c.getUsername().equals(chatMessage.getRecipient()))
-//                    .findFirst()
-//                    .ifPresent(c -> c.send(chatMessage));
-//        }
-//        // Nếu là chat nhóm
-//        else if (chatMessage.getType() == ChatMessage.Type.GROUP) {
-//            Server.clientHandlers.stream().forEach(c -> {
-//                if (chatMessage.getRecipient().equals("ALL") || c.getUsername().equals(chatMessage.getRecipient())) {
-//                    c.send(chatMessage);
-//                }
-//            });
-//        }
-//    }
 }
