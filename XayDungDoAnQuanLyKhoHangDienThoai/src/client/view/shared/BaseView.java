@@ -4,15 +4,15 @@ import shared.MiniSidebarPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class BaseView extends JFrame {
     protected JPanel mainPanel;
     protected CardLayout cardLayout;
     protected SidebarMenu sidebarMenu;
     protected MiniSidebarPanel miniSidebar;
-    protected JLayeredPane layeredPane;
-    private JPanel overlayPanel;
-
+    protected JPanel containerPanel;
     private final int SIDEBAR_WIDTH = 220;
     private boolean sidebarVisible = false;
 
@@ -23,110 +23,77 @@ public class BaseView extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // LayeredPane để chồng sidebar lên
-        layeredPane = new JLayeredPane();
-        layeredPane.setLayout(null);
-        add(layeredPane, BorderLayout.CENTER);
+        // Container chính chứa cả sidebar và nội dung
+        containerPanel = new JPanel(new BorderLayout());
+        add(containerPanel, BorderLayout.CENTER);
 
-        // Main content panel với CardLayout
+        // Main panel dùng CardLayout để chuyển view
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        mainPanel.setBounds(0, 0, getWidth(), getHeight());
-        layeredPane.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
+        containerPanel.add(mainPanel, BorderLayout.CENTER);
 
-        // Mini sidebar chứa nút mở
+        // MiniSidebarPanel + nền trắng bọc ngoài
+        JPanel miniWrapper = new JPanel(new BorderLayout());
+        miniWrapper.setBackground(Color.WHITE);
+
         miniSidebar = new MiniSidebarPanel(this::openSidebar);
-        miniSidebar.setBounds(0, 10, 40, 40);
-        layeredPane.add(miniSidebar, JLayeredPane.PALETTE_LAYER);
+        miniWrapper.add(miniSidebar, BorderLayout.CENTER);
+        containerPanel.add(miniWrapper, BorderLayout.NORTH);
 
-        // Sidebar chính
+        // Sidebar ẩn ban đầu
         sidebarMenu = new SidebarMenu();
-        sidebarMenu.setBounds(-SIDEBAR_WIDTH, 0, SIDEBAR_WIDTH, getHeight());
-//        sidebarMenu.setOnCloseListener(this::closeSidebar);
-        layeredPane.add(sidebarMenu, JLayeredPane.MODAL_LAYER);
+        sidebarMenu.setPreferredSize(new Dimension(0, getHeight()));
+        sidebarMenu.setOnCloseListener(this::closeSidebar);
+        containerPanel.add(sidebarMenu, BorderLayout.WEST);
 
-        // Overlay trong suốt (bắt sự kiện click ngoài)
-        overlayPanel = new JPanel() {
+        // Cập nhật lại kích thước sidebar khi resize
+        addComponentListener(new ComponentAdapter() {
             @Override
-            public boolean isOpaque() {
-                return false;
-            }
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                // không vẽ gì (trong suốt)
-            }
-
-            @Override
-            public boolean contains(int x, int y) {
-                // Chỉ bắt sự kiện ngoài sidebar
-                if (x < sidebarMenu.getWidth()) {
-                    return false;
-                }
-                return true;
-            }
-        };
-        overlayPanel.setLayout(null);
-        overlayPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                slideCloseSidebar();
-            }
-        });
-        setGlassPane(overlayPanel);
-
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                int width = getWidth();
+            public void componentResized(ComponentEvent evt) {
                 int height = getHeight();
-
-                mainPanel.setSize(width, height);
-                overlayPanel.setSize(width, height);
-
-                sidebarMenu.setSize(SIDEBAR_WIDTH, height);
-                if (sidebarVisible) {
-                    sidebarMenu.setLocation(0, 0); // đã mở
-                } else {
-                    sidebarMenu.setLocation(-SIDEBAR_WIDTH, 0); // đang đóng
-                }
-
-                miniSidebar.setLocation(0, 10); // giữ ở góc trên trái
-                miniSidebar.setSize(40, 40);
-                layeredPane.revalidate();
-                layeredPane.repaint();
+                sidebarMenu.setPreferredSize(new Dimension(sidebarVisible ? SIDEBAR_WIDTH : 0, height));
+                containerPanel.revalidate();
+                containerPanel.repaint();
             }
         });
-
     }
 
-    // Mở sidebar có hiệu ứng trượt
+    // Mở sidebar trượt
     public void openSidebar() {
-        overlayPanel.setVisible(true);
         miniSidebar.setVisible(false);
 
         new Thread(() -> {
-            for (int x = -SIDEBAR_WIDTH; x <= 0; x += 10) {
-                sidebarMenu.setLocation(x, 0);
+            for (int width = 0; width <= SIDEBAR_WIDTH; width += 10) {
+                sidebarMenu.setPreferredSize(new Dimension(width, getHeight()));
+                SwingUtilities.invokeLater(() -> {
+                    containerPanel.revalidate();
+                    containerPanel.repaint();
+                });
                 try {
                     Thread.sleep(5);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
             sidebarVisible = true;
         }).start();
     }
 
-    // Đóng sidebar có hiệu ứng trượt
+    // Đóng sidebar trượt
     public void slideCloseSidebar() {
         new Thread(() -> {
-            for (int x = 0; x >= -SIDEBAR_WIDTH; x -= 10) {
-                sidebarMenu.setLocation(x, 0);
+            for (int width = SIDEBAR_WIDTH; width >= 0; width -= 10) {
+                sidebarMenu.setPreferredSize(new Dimension(width, getHeight()));
+                SwingUtilities.invokeLater(() -> {
+                    containerPanel.revalidate();
+                    containerPanel.repaint();
+                });
                 try {
                     Thread.sleep(5);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
             sidebarVisible = false;
             SwingUtilities.invokeLater(() -> {
-                overlayPanel.setVisible(false);
                 miniSidebar.setVisible(true);
             });
         }).start();
@@ -144,9 +111,19 @@ public class BaseView extends JFrame {
         cardLayout.show(mainPanel, name);
     }
 
-    // Getters
-    public SidebarMenu getSidebarMenu() { return sidebarMenu; }
-    public JPanel getMainPanel() { return mainPanel; }
-    public MiniSidebarPanel getMiniSidebar() { return miniSidebar; }
-    public CardLayout getCardLayout() { return cardLayout; }
+    public SidebarMenu getSidebarMenu() {
+        return sidebarMenu;
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
+
+    public MiniSidebarPanel getMiniSidebar() {
+        return miniSidebar;
+    }
+
+    public CardLayout getCardLayout() {
+        return cardLayout;
+    }
 }

@@ -23,13 +23,13 @@ public class SidebarMenu extends JPanel {
     private Runnable onCloseListener;
 
 
-
     private final List<JButton> allButtons = new ArrayList<>();
     private final Color defaultColor = new Color(92, 181, 181);
     private final Color hoverColor = new Color(241, 248, 248);
     private final Color activeColor = new Color(241, 248, 248);
     private JButton activeButton;
     public NhanVienDAO nhanVienDAO;
+    private JButton btnClose;
 
     public SidebarMenu() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -58,68 +58,59 @@ public class SidebarMenu extends JPanel {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setOpaque(false);
-        infoPanel.add(lblTitle);
-        infoPanel.add(lblNhomQuyen);
         infoPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 0, 15));
 
-        JPanel topUserPanel = new JPanel();
-        topUserPanel.setLayout(new BoxLayout(topUserPanel, BoxLayout.X_AXIS));
+        JPanel topUserPanel = new JPanel(new BorderLayout());
         topUserPanel.setOpaque(false);
         topUserPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         topUserPanel.add(Box.createHorizontalStrut(10));
-
-        topUserPanel.add(lblAvata);
-        topUserPanel.add(infoPanel);
         topUserPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
-
-        // Panel chứa nút đóng ở trên cùng bên phải
-        JPanel closePanel = new JPanel();
-        closePanel.setLayout(new BoxLayout(closePanel, BoxLayout.X_AXIS));
-        closePanel.setOpaque(false);
-        closePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        closePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10)); // căn lề trên phải
-
-        JButton btnClose = new JButton("✖");
+        btnClose = new JButton();
         btnClose.setFocusPainted(false);
         btnClose.setBorderPainted(false);
         btnClose.setContentAreaFilled(false);
-        btnClose.setFont(new Font("Arial", Font.BOLD, 16));
-        btnClose.setForeground(Color.BLACK);
+        btnClose.setIcon(new FlatSVGIcon("images/closemenu.svg", 18, 18));
+        btnClose.setOpaque(false);
         btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnClose.setToolTipText("Đóng menu");
-        btnClose.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
 
         btnClose.addActionListener(e -> {
             if (onCloseListener != null) onCloseListener.run();
         });
 
-// Căn phải
-        closePanel.add(Box.createHorizontalGlue());
-        closePanel.add(btnClose);
+        infoPanel.add(lblTitle);
+        infoPanel.add(lblNhomQuyen);
 
-// Thêm vào đầu Sidebar
-        add(topUserPanel,BorderLayout.CENTER);
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS));
+        leftPanel.setOpaque(false);
+        leftPanel.add(Box.createHorizontalStrut(10));
+        leftPanel.add(lblAvata);
+        leftPanel.add(infoPanel);
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 20));
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        rightPanel.setOpaque(false);
+        rightPanel.add(btnClose);
+        rightPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        topUserPanel.add(leftPanel, BorderLayout.WEST);
+        topUserPanel.add(rightPanel, BorderLayout.EAST);
 
-
-
-
-
-
+        add(topUserPanel);
 
         btnHome = createSidebarButton("  Trang chủ", "images/house.svg");
-        btnProduct = createSidebarButton("  Sản phẩm", "images/sanpham.svg");
-        btnProductInfo = createSidebarButton("  Thuộc tính", "images/thuocTinh.svg");
-        btnStock = createSidebarButton("Khu vực kho", "images/mapppp.svg");
-        btnImport = createSidebarButton("  Phiếu nhập", "images/phieunhap.svg");
-        btnExport = createSidebarButton("  Phiếu xuất", "images/exportt.svg");
-        btnSupplier = createSidebarButton("Nhà cung cấp", "images/nhacungcapp.svg");
+        btnProduct = createSidebarButton("  Kho hàng", "images/sanpham.svg");
+        btnProductInfo = createSidebarButton("  Thông số", "images/thuocTinh.svg");
+        btnStock = createSidebarButton("  Tầng kho", "images/mapppp.svg");
+        btnImport = createSidebarButton("  Nhập hàng", "images/phieunhap.svg");
+        btnExport = createSidebarButton("  Xuất hàng", "images/exportt.svg");
+        btnSupplier = createSidebarButton("  Bên giao", "images/nhacungcapp.svg");
         btnCustomer = createSidebarButton("  Khách hàng", "images/khachhang.svg");
         btnMess = createSidebarButton("  Tin nhắn", "images/messs.svg");
         btnEmployee = createSidebarButton("  Nhân viên", "images/nahnvienn.svg");
         btnAccount = createSidebarButton("  Tài khoản", "images/accc.svg");
-        btnStatistic = createSidebarButton("  Thống kê", "images/thonmgke.svg");
+        btnStatistic = createSidebarButton("  Số liệu", "images/thonmgke.svg");
         btnLogout = createSidebarButton("  Đăng xuất", "images/log_out.svg");
         btnLogout.setIconTextGap(-2);
 
@@ -137,7 +128,6 @@ public class SidebarMenu extends JPanel {
         allButtons.add(btnStatistic);
         allButtons.add(btnLogout);
 
-        // Giao diện layout
         add(Box.createVerticalStrut(20));
         add(new JSeparator(SwingConstants.HORIZONTAL));
         add(Box.createVerticalStrut(10));
@@ -155,7 +145,6 @@ public class SidebarMenu extends JPanel {
         add(btnAccount);
         add(btnStatistic);
 
-        // Đẩy nút đăng xuất xuống dưới cùng
         add(Box.createVerticalGlue());
         add(btnLogout);
     }
@@ -169,19 +158,17 @@ public class SidebarMenu extends JPanel {
         button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        button.setHorizontalAlignment(SwingConstants.LEFT); // Căn trái toàn bộ nội dung
-        button.setIconTextGap(15); // Khoảng cách giữa icon và chữ
-        button.setMargin(new Insets(10, 20, 10, 10)); // Lề trong (top, left, bottom, right)
+        button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setIconTextGap(15);
+        button.setMargin(new Insets(10, 20, 10, 10));
 
         button.setMaximumSize(new Dimension(220, 45));
         button.setPreferredSize(new Dimension(220, 45));
 
         button.setAlignmentX(Component.LEFT_ALIGNMENT); // Căn trái trong layout Box
 
-        // Icon SVG
         button.setIcon(new FlatSVGIcon(svgPath, 28, 28));
 
-        // Hover/Active effect
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -203,7 +190,6 @@ public class SidebarMenu extends JPanel {
         String tenNhomQuyen = "";
         switch (manhomquyen) {
             case 2 -> {
-                // Nhóm quyền 2: Nhân viên kho - Chỉ làm việc với phiếu nhập/xuất, sản phẩm
                 btnCustomer.setVisible(false);
                 btnEmployee.setVisible(false);
                 btnAccount.setVisible(false);
@@ -211,7 +197,6 @@ public class SidebarMenu extends JPanel {
                 tenNhomQuyen = "Nhân viên kho";
             }
             case 3 -> {
-                // Nhóm quyền 3: Nhân viên bán hàng - Làm việc với khách hàng, phiếu xuất, thống kê
                 btnProductInfo.setVisible(false);
                 btnImport.setVisible(false);
                 btnEmployee.setVisible(false);
@@ -220,7 +205,6 @@ public class SidebarMenu extends JPanel {
                 tenNhomQuyen = "Nhân viên xuất hàng";
             }
             case 4 -> {
-                // Nhóm quyền 4: Chỉ được xem thống kê và sản phẩm
                 btnProductInfo.setVisible(false);
                 btnImport.setVisible(false);
                 btnExport.setVisible(false);
@@ -231,7 +215,6 @@ public class SidebarMenu extends JPanel {
                 tenNhomQuyen = "Nhân viên giám sát";
             }
             case 5 -> {
-                // Nhóm quyền 5: CSKH - Quản lý khách hàng và hỗ trợ qua tin nhắn
                 btnHome.setVisible(false);
                 btnProductInfo.setVisible(false);
                 btnImport.setVisible(false);
@@ -253,7 +236,6 @@ public class SidebarMenu extends JPanel {
     }
 
 
-
     public void setActiveButton(JButton button) {
         resetAllButtonColors();
         button.setBackground(activeColor);
@@ -265,26 +247,57 @@ public class SidebarMenu extends JPanel {
             btn.setBackground(defaultColor);
         }
     }
+    public JButton getBtnHome() {
+        return btnHome;
+    }
 
-    // Getters
-    public JButton getBtnHome() { return btnHome; }
-    public JButton getBtnProduct() { return btnProduct; }
-    public JButton getBtnCustomer() { return btnCustomer; }
-    public JButton getBtnEmployee() { return btnEmployee; }
-    public JButton getBtnAccount() { return btnAccount; }
-    public JButton getBtnStatistic() { return btnStatistic; }
-    public JButton getBtnLogout() { return btnLogout; }
-    public JButton getBtnImport() { return btnImport; }
-    public JButton getBtnExport() { return btnExport; }
-    public JButton getBtnMess() { return btnMess; }
-    public JButton getBtnProductInfo() { return btnProductInfo; }
+    public JButton getBtnProduct() {
+        return btnProduct;
+    }
+
+    public JButton getBtnCustomer() {
+        return btnCustomer;
+    }
+
+    public JButton getBtnEmployee() {
+        return btnEmployee;
+    }
+
+    public JButton getBtnAccount() {
+        return btnAccount;
+    }
+
+    public JButton getBtnStatistic() {
+        return btnStatistic;
+    }
+
+    public JButton getBtnLogout() {
+        return btnLogout;
+    }
+
+    public JButton getBtnImport() {
+        return btnImport;
+    }
+
+    public JButton getBtnExport() {
+        return btnExport;
+    }
+
+    public JButton getBtnMess() {
+        return btnMess;
+    }
+
+    public JButton getBtnProductInfo() {
+        return btnProductInfo;
+    }
+
     public JButton getBtnSupplier() {
         return btnSupplier;
     }
+
     public void setOnCloseListener(Runnable onCloseListener) {
         this.onCloseListener = onCloseListener;
     }
-
 
     public JButton getBtnStock() {
         return btnStock;

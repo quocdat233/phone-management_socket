@@ -36,17 +36,11 @@ public class MainView extends BaseView {
         titlePanel = new JPanel();
         titlePanel.setBackground(new Color(250, 255, 255));
 
-        JLabel titleLabel = new JLabel("HỆ THỐNG QUẢN LÝ KHO ĐIỆN THOẠI", JLabel.CENTER);
-        JLabel label = new JLabel("Quản lý hiệu quả – Thành công vững bền - Công nghệ tiên phong – Dẫn đầu xu hướng!", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Quản lý hiệu quả – Thành công vững bền - Công nghệ tiên phong – Dẫn đầu xu hướng!", JLabel.CENTER);
         titleLabel.setForeground(new Color(43, 137, 143));
-        label.setForeground(new Color(43, 137, 143));
-
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 34));
-        label.setFont(new Font("Arial", Font.PLAIN, 18));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 21));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         titlePanel.add(titleLabel);
-        titlePanel.add(label);
 
         ColorFadePanel bodyPanel = new ColorFadePanel();
         bodyPanel.setLayout(new GridLayout(1, 3, 70, 0));

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class TransparentLoadingSpinner extends JWindow {
     private int angle = 0;
-    private final Timer timer;
+    public final Timer timer;
 
     public TransparentLoadingSpinner(JFrame parent) {
         setBackground(new Color(0, 0, 0, 0)); // Nền trong suốt

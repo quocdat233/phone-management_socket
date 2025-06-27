@@ -39,7 +39,6 @@ public class messager extends BaseView {
     private JPanel messagePanel;
 
     // Màu sắc
-    private static final Color MAIN_BG = new Color(240, 242, 245);
     private static final Color SIDEBAR_BG = new Color(230, 240, 255);
     private static final Color CHAT_BG = Color.WHITE;
     private static final Color ACCENT_COLOR = new Color(96, 138, 104);
@@ -57,13 +56,11 @@ public class messager extends BaseView {
 
     private void createChatLayout() {
         mainChatPanel = new JPanel(new BorderLayout());
-        mainChatPanel.setBackground(MAIN_BG);
 
         // ========== LEFT SIDEBAR ========== //
-        JPanel leftPanel = new JPanel(new BorderLayout());
+        JPanel leftPanel = new RoundedPanel(20,SIDEBAR_BG);
+        leftPanel.setLayout(new BorderLayout());
         leftPanel.setPreferredSize(new Dimension(250, 0));
-        leftPanel.setBackground(SIDEBAR_BG);
-        leftPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Panel thông tin user
         JPanel userInfoPanel = new RoundedPanel(15);
@@ -112,9 +109,9 @@ public class messager extends BaseView {
         groupsPanel.add(createGroupButton, BorderLayout.SOUTH);
 
         leftPanel.add(groupsPanel, BorderLayout.SOUTH);
-        mainChatPanel.add(leftPanel, BorderLayout.WEST);
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new RoundedPanel(20);
+        centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(CHAT_BG);
 
         chatTitleLabel = new JLabel("Chọn người để bắt đầu trò chuyện");
@@ -125,13 +122,13 @@ public class messager extends BaseView {
 
         // This is the actual panel that holds the message bubbles.
         // It should be part of the JScrollPane.
-        messagePanel = new JPanel();
+        messagePanel = new RoundedPanel(10);
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
         messagePanel.setBackground(CHAT_BG);
-        messagePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JScrollPane chatScrollPane = new JScrollPane(messagePanel);
         chatScrollPane.setBorder(null);
+        chatScrollPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -142,11 +139,10 @@ public class messager extends BaseView {
         // or be empty until a conversation is selected.
         // For now, let's connect it to the main messagePanel (which holds the current chat history)
         conversationsTabbedPane.addTab("Chat", chatScrollPane);
-        centerPanel.add(conversationsTabbedPane, BorderLayout.CENTER);
 
         // Panel nhập tin nhắn
         JPanel inputPanel = new JPanel(new BorderLayout(10, 0));
-        inputPanel.setBorder(new EmptyBorder(10, 15, 15, 15));
+        inputPanel.setBorder(new EmptyBorder(10, 5, 5, 10));
 
         messageField = new JTextField();
         messageField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -170,12 +166,14 @@ public class messager extends BaseView {
 
         inputPanel.add(messageField, BorderLayout.CENTER);
         inputPanel.add(buttonPanel, BorderLayout.EAST);
+
+        centerPanel.add(conversationsTabbedPane, BorderLayout.CENTER);
         centerPanel.add(inputPanel, BorderLayout.SOUTH);
 
-        mainChatPanel.add(centerPanel, BorderLayout.CENTER);
 
         // ========== RIGHT SIDEBAR ========== //
-        JPanel rightPanel = new JPanel(new BorderLayout());
+        JPanel rightPanel = new RoundedPanel(20);
+        rightPanel.setLayout(new BorderLayout());
         rightPanel.setPreferredSize(new Dimension(200, 0));
         rightPanel.setBackground(SIDEBAR_BG);
         rightPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -194,7 +192,11 @@ public class messager extends BaseView {
         groupMembersPanel.add(membersScrollPane, BorderLayout.CENTER);
 
         rightPanel.add(groupMembersPanel, BorderLayout.CENTER);
+
+        mainChatPanel.add(centerPanel, BorderLayout.CENTER);
+        mainChatPanel.add(leftPanel, BorderLayout.WEST);
         mainChatPanel.add(rightPanel, BorderLayout.EAST);
+        mainChatPanel.setBorder(BorderFactory.createEmptyBorder(7,7,7,7));
 
         currentChatPane = new JTextPane();
         currentChatPane.setEditable(false);

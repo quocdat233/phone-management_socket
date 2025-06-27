@@ -4,6 +4,7 @@ import client.VKULogin;
 import client.view.shared.Toast;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import network.SocketManager;
+import shared.TransparentLoadingSpinner;
 import shared.models.TaiKhoan;
 import shared.models.NhanVien;
 import shared.request.LoginRequest;
@@ -30,14 +31,28 @@ public class dangNhapController {
         loginView.getPnlDangNhap().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                try {
-                    checkLogin();
-                } catch (UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(VKULogin.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(loginView);
+                TransparentLoadingSpinner spinner = new TransparentLoadingSpinner(parentFrame);
+                spinner.setVisible(true);
+                spinner.timer.start();
+
+                new Thread(() -> {
+                    try {
+                        checkLogin();
+                    } catch (UnsupportedLookAndFeelException ex) {
+                        Logger.getLogger(VKULogin.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        SwingUtilities.invokeLater(() -> {
+                            spinner.setVisible(false);
+                            spinner.dispose();
+                            spinner.timer.stop();
+                        });
+                    }
+                }).start();
             }
         });
     }
+
 
     private void checkLogin() throws UnsupportedLookAndFeelException {
         String username = loginView.getTxtTaiKhoan().getText().trim();
@@ -65,7 +80,7 @@ public class dangNhapController {
                         return;
                     }
 
-                    new Toast(loginView, "Thành công", "Đăng nhập thành công,\nChào " + tk.getUsername() + "!", 1500, successIcon);
+                    new Toast(loginView, "Success", "Chào " +nv.getHoten() + " !", 1500, successIcon);
 
                     Timer timer = new Timer(300, e -> {
                         try {
@@ -90,7 +105,7 @@ public class dangNhapController {
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace(); // 👉 In toàn bộ lỗi ra console
+            e.printStackTrace();
             JOptionPane.showMessageDialog(
                     loginView,
                     "Không thể kết nối tới server: " + e.getMessage(),
